@@ -1,0 +1,140 @@
+.review__container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.review__title {
+	text-align: center;
+}
+
+.review-form {
+	max-width: 400px;
+	width: 100%;
+	padding: 10px 20px;
+	border: 5px solid #7ba5de;
+	color: #474b4d;
+	border-radius: 8px;
+}
+
+.review-form__row {
+	display: grid;
+	gap: 3px;
+	margin-bottom: 15px;
+}
+
+.review-form__row:has(
+		.review-form__input:required,
+		.review-form__textarea:required,
+		.review-form__radio-input:required
+	)
+	.review-form__label::after {
+	content: '*';
+	color: red;
+	padding-left: 5px;
+}
+
+.review-form__label {
+	font-size: 14px;
+	color: #555;
+}
+
+.review-form__input,
+.review-form__textarea {
+	padding: 8px;
+	font-size: 14px;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+}
+
+.review-form__textarea {
+	resize: vertical;
+}
+
+.review-form__radio-label {
+	position: relative;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	font-size: 10px;
+	vertical-align: middle;
+	line-height: 22px;
+	transition: all 0.3s ease-in-out;
+	user-select: none;
+}
+
+.review-form__radio-label:not(:last-child) {
+	margin-right: 10px;
+}
+
+.review-form__radio-label:has(.review-form__radio-input:checked) {
+	color: #000000;
+	scale: 1.1;
+}
+
+.review-form__radio-label::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+	width: 100%;
+	height: 100%;
+	mask: url('./../images/star.svg') no-repeat center center/cover;
+	background-color: #cccccc;
+	pointer-events: none;
+	transition: all 0.3s ease-in-out;
+	z-index: -1;
+}
+
+.review-form__radio-label:has(.review-form__radio-input:hover)::before {
+	background-color: #f7dc6f;
+}
+
+.review-form__radio-label:has(.review-form__radio-input:checked)::before {
+	animation: rotate 0.6s ease-in-out;
+	background-color: #f7dc6f;
+}
+
+@keyframes rotate {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.review-form__radio-input {
+	display: none;
+}
+
+.review-form__button {
+	position: relative;
+	border: none;
+	color: #fff;
+	background: #de6565;
+	text-align: center;
+	border-radius: 20px;
+	cursor: pointer;
+	padding: 10px;
+	transition: all 0.3s;
+}
+
+.review-form__button:hover {
+	background: #e87c7c;
+	transform: scale(1.05);
+}
+
+.review-form__button:active {
+	transform: scale(0.95);
+	transition-duration: 0.05s;
+	background: #de6565;
+}
+
+.review-form__button:disabled {
+	background: #cccccc;
+	cursor: not-allowed;
+	transform: none;
+}

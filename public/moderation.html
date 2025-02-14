@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Модерация отзывов</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+		<link rel="stylesheet" href="./css/modern-normalize.css" />
+		<link rel="stylesheet" href="./css/base.css" />
+		<link rel="stylesheet" href="./css/moderation.css" />
+
+		<link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+		<link rel="manifest" href="./favicon/site.webmanifest">
+	</head>
+	<body>
+		<section class="moderation">
+			<div class="container moderation__container">
+			<h1 class="moderation__title">Модерация отзывов</h1>
+			<div
+				id="reviews-container"
+				class="reviews-container"
+			></div>
+
+			<div id="pagination" class="moderation__pagination">
+				<button id="prev-page" class="pagination__button">Назад</button>
+				<span id="current-page" class="pagination__current">1</span>
+				<button id="next-page" class="pagination__button">
+					Вперёд
+				</button>
+			</div>
+		</div>
+		</section>
+
+		<script src="./js/moderation.js"></script>
+	</body>
+</html>
