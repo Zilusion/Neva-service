@@ -2,77 +2,200 @@
 <html lang="ru">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Добавление отзыва</title>
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-		
+		<title>Отзывы (Стиральные машины)</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+			rel="stylesheet"
+		/>
+
+		<!-- Ваши CSS-файлы -->
 		<link rel="stylesheet" href="./css/modern-normalize.css" />
 		<link rel="stylesheet" href="./css/base.css" />
 		<link rel="stylesheet" href="./css/review.css" />
 
-		<link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
-		<link rel="manifest" href="./favicon/site.webmanifest">
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="./favicon/apple-touch-icon.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="./favicon/favicon-32x32.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="./favicon/favicon-16x16.png"
+		/>
+		<link rel="manifest" href="./favicon/site.webmanifest" />
 	</head>
 	<body>
+		<!-- ФОРМА ДОБАВЛЕНИЯ ОТЗЫВА -->
 		<section class="review">
 			<div class="container review__container">
 				<h1 class="reviewtitle">Оставить отзыв</h1>
 				<form id="review-form" class="review-form">
+					<!-- Скрытое поле, чтобы задать source = 1 (для стиральных машин) -->
+					<input type="hidden" id="source" name="source" value="1" />
+
 					<div class="review-form__row review-form__row--name">
-						<label for="name" class="review-form__label">Ваше имя</label>
-						<input type="text" id="name" name="name" class="review-form__input" required />
+						<label for="name" class="review-form__label"
+							>Ваше имя</label
+						>
+						<input
+							type="text"
+							id="name"
+							name="name"
+							class="review-form__input"
+							required
+						/>
 					</div>
-				
+
 					<div class="review-form__row review-form__row--repair-date">
-						<label for="repair-date" class="review-form__label">Дата ремонта</label>
-						<input type="date" id="repair-date" name="repair_date" class="review-form__input" />
+						<label for="repair-date" class="review-form__label"
+							>Дата ремонта</label
+						>
+						<input
+							type="date"
+							id="repair-date"
+							name="repair_date"
+							class="review-form__input"
+						/>
 					</div>
-	
+
 					<div class="review-form__row review-form__row--malfunction">
-						<label for="malfunction-type" class="review-form__label">Тип неисправности</label>
-						<input type="text" id="malfunction-type" name="malfunction_type" class="review-form__input" />
+						<label for="malfunction-type" class="review-form__label"
+							>Тип неисправности</label
+						>
+						<input
+							type="text"
+							id="malfunction-type"
+							name="malfunction_type"
+							class="review-form__input"
+						/>
 					</div>
-				
+
 					<div class="review-form__row review-form__row--master">
-						<label for="master" class="review-form__label">Фамилия мастера</label>
-						<input type="text" id="master" name="master" class="review-form__input" />
+						<label for="master" class="review-form__label"
+							>Фамилия мастера</label
+						>
+						<input
+							type="text"
+							id="master"
+							name="master"
+							class="review-form__input"
+						/>
 					</div>
-				
+
 					<div class="review-form__row review-form__row--review">
-						<label for="review" class="review-form__label">Текст отзыва</label>
-						<textarea id="review" name="review" class="review-form__textarea" required rows="5"></textarea>
+						<label for="review" class="review-form__label"
+							>Текст отзыва</label
+						>
+						<textarea
+							id="review"
+							name="review"
+							class="review-form__textarea"
+							required
+							rows="5"
+						></textarea>
 					</div>
-	
+
 					<div class="review-form__row review-form__row--rating">
 						<span class="review-form__label">Ваша оценка</span>
 						<div class="review-form__rating">
-							<label class="review-form__radio-label">1
-								<input class="review-form__radio-input" type="radio" name="rate" value="1" required />
+							<label class="review-form__radio-label"
+								>1
+								<input
+									class="review-form__radio-input"
+									type="radio"
+									name="rate"
+									value="1"
+									required
+								/>
 							</label>
-							<label class="review-form__radio-label">2
-								<input class="review-form__radio-input" type="radio" name="rate" value="2" required />
+							<label class="review-form__radio-label"
+								>2
+								<input
+									class="review-form__radio-input"
+									type="radio"
+									name="rate"
+									value="2"
+									required
+								/>
 							</label>
-							<label class="review-form__radio-label">3
-								<input class="review-form__radio-input" type="radio" name="rate" value="3" required />
+							<label class="review-form__radio-label"
+								>3
+								<input
+									class="review-form__radio-input"
+									type="radio"
+									name="rate"
+									value="3"
+									required
+								/>
 							</label>
-							<label class="review-form__radio-label">4
-								<input class="review-form__radio-input" type="radio" name="rate" value="4" required />
+							<label class="review-form__radio-label"
+								>4
+								<input
+									class="review-form__radio-input"
+									type="radio"
+									name="rate"
+									value="4"
+									required
+								/>
 							</label>
-							<label class="review-form__radio-label">5
-								<input class="review-form__radio-input" type="radio" name="rate" value="5" required />
+							<label class="review-form__radio-label"
+								>5
+								<input
+									class="review-form__radio-input"
+									type="radio"
+									name="rate"
+									value="5"
+									required
+								/>
 							</label>
 						</div>
 					</div>
-	
+
 					<div class="review-form__row review-form__row--submit">
-						<button type="submit" class="review-form__button">Отправить</button>
+						<button type="submit" class="review-form__button">
+							Отправить
+						</button>
 					</div>
 				</form>
 			</div>
 		</section>
+
+		<!-- БЛОК СТАТИСТИКИ -->
+		<section class="stats">
+			<div class="container stats__container">
+				<div id="stats-block"></div>
+			</div>
+		</section>
+
+		<!-- СПИСОК ОТЗЫВОВ -->
+		<section class="reviews-list">
+			<div class="container reviews__container">
+				<div id="reviews-container"></div>
+
+				<!-- Блок пагинации -->
+				<div id="pagination" class="moderation__pagination">
+					<button id="prev-page" class="pagination__button">
+						Назад
+					</button>
+					<span id="current-page" class="pagination__current">1</span>
+					<button id="next-page" class="pagination__button">
+						Вперёд
+					</button>
+				</div>
+			</div>
+		</section>
+
+		<!-- Скрипт со всей логикой формы и вывода отзывов -->
 		<script src="./js/review.js"></script>
 	</body>
 </html>

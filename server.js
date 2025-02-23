@@ -25,22 +25,23 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/submitReview', (req, res) => {
-	let { name, repair_date, malfunction_type, master, review, rate } =
+	let { name, repair_date, malfunction_type, master, review, rate, source } =
 		req.body;
 
 	repair_date = repair_date || null;
 	malfunction_type = malfunction_type || null;
 	master = master || null;
+	source = source || 0;
 
 	const query = `
     INSERT INTO Reviews 
-      (Name, Repair_date, Malfunction_type, Master, Review, Rate, Published, Send_date)
-    VALUES (?, ?, ?, ?, ?, ?, 0, CURRENT_DATE())
+      (Name, Repair_date, Malfunction_type, Master, Review, Rate, Published, Send_date, Source)
+    VALUES (?, ?, ?, ?, ?, ?, 0, CURRENT_DATE(), ?)
   `;
 
 	db.query(
 		query,
-		[name, repair_date, malfunction_type, master, review, rate],
+		[name, repair_date, malfunction_type, master, review, rate, source],
 		(err, result) => {
 			if (err) {
 				console.error(err);
@@ -51,9 +52,89 @@ app.post('/submitReview', (req, res) => {
 	);
 });
 
+app.get('/getPublicReviews', (req, res) => {
+	const source = parseInt(req.query.source) || 0; // 1,2,3
+	const page = parseInt(req.query.page) || 1;
+	const limit = 5;
+	const offset = (page - 1) * limit;
+
+	// Основной запрос отзывов
+	const query = `
+      SELECT SQL_CALC_FOUND_ROWS *
+      FROM Reviews
+      WHERE Published = 1 AND Source = ?
+      ORDER BY Send_date DESC
+      LIMIT ? OFFSET ?
+    `;
+	db.query(query, [source, limit, offset], (err, reviews) => {
+		if (err) {
+			console.error(err);
+			return res.status(500).json({ success: false });
+		}
+		// Всего записей
+		db.query('SELECT FOUND_ROWS() as total', (err2, results) => {
+			if (err2) {
+				console.error(err2);
+				return res.status(500).json({ success: false });
+			}
+			const total = results[0].total;
+
+			// Запрос для распределения оценок (1..5)
+			const ratingDistQuery = `
+              SELECT Rate, COUNT(*) as count
+              FROM Reviews
+              WHERE Published = 1 AND Source = ?
+              GROUP BY Rate
+            `;
+			db.query(ratingDistQuery, [source], (err3, ratingDistRows) => {
+				if (err3) {
+					console.error(err3);
+					return res.status(500).json({ success: false });
+				}
+
+				// Запрос для среднего рейтинга и общего числа
+				const avgQuery = `
+                  SELECT AVG(Rate) as avgRating, COUNT(*) as totalReviews
+                  FROM Reviews
+                  WHERE Published = 1 AND Source = ?
+                `;
+				db.query(avgQuery, [source], (err4, avgRows) => {
+					if (err4) {
+						console.error(err4);
+						return res.status(500).json({ success: false });
+					}
+
+					const avgRating = avgRows[0].avgRating || 0;
+					const totalReviews = avgRows[0].totalReviews || 0;
+
+					// Преобразуем распределение в удобный формат (Rate -> count)
+					// Пример: [{Rate:5, count:10}, {Rate:4, count:3}, ...]
+					// Вы можете вернуть как есть
+					const ratingDistribution = {};
+					for (let i = 1; i <= 5; i++) {
+						ratingDistribution[i] = 0; // по умолчанию 0
+					}
+					ratingDistRows.forEach((row) => {
+						ratingDistribution[row.Rate] = row.count;
+					});
+
+					res.json({
+						success: true,
+						reviews,
+						total, // количество отзывов на текущем срезе
+						avgRating, // средняя оценка
+						totalReviews, // общее число опубликованных отзывов
+						ratingDistribution, // {1: X, 2: Y, ... 5: Z}
+					});
+				});
+			});
+		});
+	});
+});
+
 app.get('/getReviews', (req, res) => {
 	const page = parseInt(req.query.page) || 1;
-	const limit = 20;
+	const limit = 5;
 	const offset = (page - 1) * limit;
 	const query = `SELECT SQL_CALC_FOUND_ROWS * FROM Reviews ORDER BY Send_date DESC LIMIT ? OFFSET ?`;
 	db.query(query, [limit, offset], (err, reviews) => {
@@ -61,7 +142,7 @@ app.get('/getReviews', (req, res) => {
 			console.error(err);
 			return res.status(500).json({ success: false });
 		}
-		
+
 		db.query('SELECT FOUND_ROWS() as total', (err2, results) => {
 			if (err2) {
 				console.error(err2);
@@ -86,6 +167,10 @@ app.post('/updateReview', (req, res) => {
 		rate,
 		comment,
 		comment_date,
+		source,
+		type,
+		mark,
+		malfunctions,
 	} = req.body;
 
 	send_date = send_date || null;
@@ -94,6 +179,10 @@ app.post('/updateReview', (req, res) => {
 	master = master || null;
 	comment = comment || null;
 	comment_date = comment_date || null;
+	source = source || 0;
+	type = type || null;
+	mark = mark || null;
+	malfunctions = malfunctions || null;
 
 	const updateQuery = `
     UPDATE Reviews
@@ -107,7 +196,11 @@ app.post('/updateReview', (req, res) => {
       Review = ?,
       Rate = ?,
       Comment = ?,
-      Comment_date = ?
+      Comment_date = ?,
+	  Source = ?,
+	  Type = ?,
+	  Mark = ?,
+	  Malfunctions = ?
     WHERE id = ?
   `;
 
@@ -124,11 +217,15 @@ app.post('/updateReview', (req, res) => {
 			rate,
 			comment,
 			comment_date,
+			source,
+			type,
+			mark,
+			malfunctions,
 			id,
 		],
 		(err, result) => {
 			if (err) {
-				console.error(err);
+				console.error('Ошибка updateReview:', err);
 				return res.status(500).json({ success: false });
 			}
 			if (result.affectedRows === 0) {
@@ -147,16 +244,59 @@ app.post('/updateReview', (req, res) => {
 	);
 });
 
-
 app.post('/deleteReview', (req, res) => {
 	const { id } = req.body;
 	const query = `DELETE FROM Reviews WHERE id = ?`;
-	db.query(query, [id], (err, result) => {
+	db.query(query, [id], (err) => {
 		if (err) {
 			console.error(err);
 			return res.status(500).json({ success: false });
 		}
 		res.json({ success: true });
+	});
+});
+
+app.get('/getSources', (req, res) => {
+	const query = 'SELECT id, Name FROM Sources ORDER BY Name ASC';
+	db.query(query, (err, results) => {
+		if (err) {
+			console.error(err);
+			return res.status(500).json({ success: false });
+		}
+		res.json({ success: true, sources: results });
+	});
+});
+
+app.get('/getTypes', (req, res) => {
+	const query = 'SELECT Code, Name FROM Types ORDER BY Name ASC';
+	db.query(query, (err, results) => {
+		if (err) {
+			console.error(err);
+			return res.status(500).json({ success: false });
+		}
+		res.json({ success: true, types: results });
+	});
+});
+
+app.get('/getMarks', (req, res) => {
+	const query = 'SELECT Name FROM Marks ORDER BY Name ASC';
+	db.query(query, (err, results) => {
+		if (err) {
+			console.error(err);
+			return res.status(500).json({ success: false });
+		}
+		res.json({ success: true, marks: results });
+	});
+});
+
+app.get('/getMalfunctions', (req, res) => {
+	const query = 'SELECT id, Name FROM Malfunctions ORDER BY Name ASC';
+	db.query(query, (err, results) => {
+		if (err) {
+			console.error(err);
+			return res.status(500).json({ success: false });
+		}
+		res.json({ success: true, malfunctions: results });
 	});
 });
 

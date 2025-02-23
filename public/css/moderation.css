@@ -90,6 +90,11 @@
 .review-item__toggle-icon {
 	width: 20px;
 	height: 20px;
+	background: url('./../images/icon-closed.svg');
+}
+
+.review-item__toggle-button--open .review-item__toggle-icon {
+	background: url('./../images/icon-opened.svg');
 }
 
 .review-item__text {
@@ -101,14 +106,14 @@
 	padding-inline: 15px;
 	padding-block: 0;
 	opacity: 0;
-	height: 0;
+	max-height: 0;
 	display: none;
-	transition: opacity 0.7s, height 0.7s, padding-block 0.7s, transform 0.7s,
-		overlay 0.7s allow-discrete, display 0.7s allow-discrete;
+	transition: opacity 0.7s, max-height 0.7s, padding-block 0.7s,
+		transform 0.7s, overlay 0.7s allow-discrete, display 0.7s allow-discrete;
 
 	@starting-style {
 		opacity: 0;
-		height: 0;
+		max-height: 0;
 		display: none;
 		padding-block: 0;
 	}
@@ -116,13 +121,13 @@
 
 .review-item__details--open {
 	opacity: 1;
-	height: 670px;
+	max-height: 2000px;
 	padding-block: 15px;
 	display: block;
 
 	@starting-style {
 		opacity: 0;
-		height: 0;
+		max-height: 0;
 		padding-block: 0;
 	}
 }
@@ -143,7 +148,8 @@
 .review-item__row:has(
 		.review-item__input:hover,
 		.review-item__textarea:hover,
-		.review-item__radio-label input:hover
+		.review-item__radio-label input:hover,
+		.ts-wrapper:hover
 	) {
 	.review-item__label {
 		border-bottom: 1px solid #007bff;
