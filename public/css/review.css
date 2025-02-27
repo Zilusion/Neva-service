@@ -1,7 +1,8 @@
-.review__container {
+.review-container {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	/* align-items: center; */
+	padding-top: 50px;
 }
 
 .review__title {
@@ -81,7 +82,7 @@
 	translate: -50% -50%;
 	width: 100%;
 	height: 100%;
-	mask: url('./../images/star.svg') no-repeat center center/cover;
+	mask: url('./../images/star-outline.svg') no-repeat center center/cover;
 	background-color: #cccccc;
 	pointer-events: none;
 	transition: all 0.3s ease-in-out;
@@ -137,4 +138,197 @@
 	background: #cccccc;
 	cursor: not-allowed;
 	transform: none;
+}
+
+.review-stats__list {
+	padding: 0;
+}
+
+.review-stats__item {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.review-stats__average {
+	font-size: 18px;
+	font-weight: 900;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.review-stats__total {
+	margin: 0;
+	margin-top: 2px;
+}
+
+.review-stats__star {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	mask: url('./../images/star-filled.svg') no-repeat center center/cover;
+}
+
+.review-stats__star--filled {
+	background-color: #f7dc6f;
+}
+
+.review-stats__star--empty {
+	background-color: #cccccc;
+}
+
+.review-stats__progressbar {
+	width: 200px;
+	height: 5px;
+	background-color: #ccc;
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.review-stats__progress {
+	display: block;
+	height: 100%;
+	background-color: #7ba5de;
+	border-radius: 5px;
+}
+
+.review-card {
+}
+
+.review-card__header {
+}
+
+.review-card__author {
+}
+
+.review-card__date {
+}
+
+.review-card__body {
+}
+
+.review-card__meta {
+}
+
+.review-card__master {
+}
+
+.review-card__malfunction {
+}
+
+.review-card__rate {
+}
+
+.review-card {
+	position: relative;
+	padding-block: 16px;
+	margin-bottom: 24px;
+	border-bottom: 2px solid #7ba5de;
+}
+
+/* Заголовок (имя / дата) */
+.review-card__header {
+	color: #333;
+	margin-bottom: 8px;
+}
+
+/* Имя автора */
+.review-card__author {
+	font-weight: 600;
+	font-size: 20px;
+	color: #000;
+}
+
+/* Дата */
+.review-card__date {
+	color: #666;
+	margin-left: 4px;
+}
+
+/* Текст отзыва */
+.review-card__body {
+	font-size: 18px;
+	line-height: 1.5;
+	color: #222;
+	margin-bottom: 8px;
+}
+
+/* Блок "мастер / неисправность" */
+.review-card__meta {
+	display: flex;
+	gap: 16px; /* Расстояние между блоками "Мастер" и "Неисправность" */
+	color: #666;
+	margin-bottom: 12px;
+}
+
+.review-card__master,
+.review-card__malfunction {
+	/* Можно дополнительно стилизовать */
+}
+
+/* Блок оценки */
+.review-card__rate {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	color: #333;
+	margin-bottom: 14px;
+}
+
+.review-card__stars {
+	display: inline-flex;
+	gap: 2px;
+}
+
+.review-card__star {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	mask: url('./../images/star-filled.svg') no-repeat center center/cover;
+}
+
+.review-card__star--filled {
+	background-color: #f7dc6f;
+}
+
+.review-card__star--empty {
+	background-color: #cccccc;
+}
+
+.review-card__answer {
+	margin-left: 70px;
+	border: 2px solid #7ba5de;
+	border-radius: 4px;
+	padding: 10px;
+	position: relative;
+	width: fit-content;
+}
+
+.review-card__answer::before {
+	content: '';
+	position: absolute;
+	left: -70px;
+	top: 50%;
+	transform: translateY(-50%);
+	mask: url('./../images/answer.svg') no-repeat center center/cover;
+	background-color: #7ba5de;
+	width: 60px;
+	aspect-ratio: 78 / 71;
+}
+
+.review-card__answer-header {
+	margin-bottom: 12px;
+}
+
+.review-card__answer-author {
+	font-weight: 600;
+	font-size: 20px;
+	color: #000;
+}
+
+.review-card__answer-date {
+	color: #666;
+	margin-left: 4px;
 }

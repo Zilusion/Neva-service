@@ -24,6 +24,9 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+const MODERATION_LIMIT = 10;
+const PUBLIC_LIMIT = 2;
+
 app.post('/submitReview', (req, res) => {
 	let { name, repair_date, malfunction_type, master, review, rate, source } =
 		req.body;
@@ -55,7 +58,7 @@ app.post('/submitReview', (req, res) => {
 app.get('/getPublicReviews', (req, res) => {
 	const source = parseInt(req.query.source) || 0; // 1,2,3
 	const page = parseInt(req.query.page) || 1;
-	const limit = 5;
+	const limit = PUBLIC_LIMIT;
 	const offset = (page - 1) * limit;
 
 	// Основной запрос отзывов
@@ -63,7 +66,7 @@ app.get('/getPublicReviews', (req, res) => {
       SELECT SQL_CALC_FOUND_ROWS *
       FROM Reviews
       WHERE Published = 1 AND Source = ?
-      ORDER BY Send_date DESC
+      ORDER BY id DESC
       LIMIT ? OFFSET ?
     `;
 	db.query(query, [source, limit, offset], (err, reviews) => {
@@ -134,9 +137,9 @@ app.get('/getPublicReviews', (req, res) => {
 
 app.get('/getReviews', (req, res) => {
 	const page = parseInt(req.query.page) || 1;
-	const limit = 5;
+	const limit = MODERATION_LIMIT;
 	const offset = (page - 1) * limit;
-	const query = `SELECT SQL_CALC_FOUND_ROWS * FROM Reviews ORDER BY Send_date DESC LIMIT ? OFFSET ?`;
+	const query = `SELECT SQL_CALC_FOUND_ROWS * FROM Reviews ORDER BY id DESC LIMIT ? OFFSET ?`;
 	db.query(query, [limit, offset], (err, reviews) => {
 		if (err) {
 			console.error(err);
@@ -151,6 +154,26 @@ app.get('/getReviews', (req, res) => {
 			const total = results[0].total;
 			res.json({ reviews, total });
 		});
+	});
+});
+
+app.get('/getReviewById', (req, res) => {
+	const id = parseInt(req.query.id);
+	if (!id) {
+		return res
+			.status(400)
+			.json({ success: false, message: 'No ID provided' });
+	}
+	const query = 'SELECT * FROM Reviews WHERE id = ?';
+	db.query(query, [id], (err, rows) => {
+		if (err) {
+			console.error(err);
+			return res.status(500).json({ success: false });
+		}
+		if (!rows.length) {
+			return res.json({ success: false, message: 'Not found' });
+		}
+		res.json({ success: true, review: rows[0] });
 	});
 });
 
@@ -297,6 +320,20 @@ app.get('/getMalfunctions', (req, res) => {
 			return res.status(500).json({ success: false });
 		}
 		res.json({ success: true, malfunctions: results });
+	});
+});
+
+app.get('/getModerationConfig', (req, res) => {
+	res.json({
+		success: true,
+		limit: MODERATION_LIMIT,
+	});
+});
+
+app.get('/getReviewsConfig', (req, res) => {
+	res.json({
+		success: true,
+		limit: PUBLIC_LIMIT,
 	});
 });
 

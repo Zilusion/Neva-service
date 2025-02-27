@@ -12,6 +12,7 @@
 
 		<link rel="stylesheet" href="./css/modern-normalize.css" />
 		<link rel="stylesheet" href="./css/base.css" />
+		<link rel="stylesheet" href="./css/pagination.css">
 		<link rel="stylesheet" href="./css/moderation.css" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" />
 
@@ -38,9 +39,9 @@
 		<section class="moderation">
 			<div class="container moderation__container">
 				<h1 class="moderation__title">Модерация отзывов</h1>
-				<div id="reviews-container" class="reviews-container"></div>
+				<div id="reviews" class="reviews"></div>
 
-				<div id="pagination" class="moderation__pagination">
+				<div id="pagination" class="pagination">
 					<button id="prev-page" class="pagination__button">
 						Назад
 					</button>
@@ -53,6 +54,7 @@
 		</section>
 
 		<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
-		<script src="./js/moderation.js"></script>
+		<script type="module" src="./js/moderationMain.js"></script>
+		<!-- <script src="./js/moderation.js"></script> -->
 	</body>
 </html>

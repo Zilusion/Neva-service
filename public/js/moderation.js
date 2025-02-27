@@ -497,5 +497,5 @@ document.addEventListener('DOMContentLoaded', function () {
 	// 	});
 	// }
 
-	loadReviews(1);
+	loadReviews(currentPage);
 });

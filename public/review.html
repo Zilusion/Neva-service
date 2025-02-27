@@ -10,180 +10,305 @@
 			rel="stylesheet"
 		/>
 
-		<!-- Ваши CSS-файлы -->
 		<link rel="stylesheet" href="./css/modern-normalize.css" />
 		<link rel="stylesheet" href="./css/base.css" />
+		<link rel="stylesheet" href="./css/pagination.css" />
 		<link rel="stylesheet" href="./css/review.css" />
 
 		<link
 			rel="apple-touch-icon"
 			sizes="180x180"
-			href="./favicon/apple-touch-icon.png"
+			href="./favicon/apple-touch-icon.svg"
 		/>
 		<link
 			rel="icon"
 			type="image/png"
 			sizes="32x32"
-			href="./favicon/favicon-32x32.png"
+			href="./favicon/favicon-32x32.svg"
 		/>
 		<link
 			rel="icon"
 			type="image/png"
 			sizes="16x16"
-			href="./favicon/favicon-16x16.png"
+			href="./favicon/favicon-16x16.svg"
 		/>
 		<link rel="manifest" href="./favicon/site.webmanifest" />
 	</head>
 	<body>
-		<!-- ФОРМА ДОБАВЛЕНИЯ ОТЗЫВА -->
-		<section class="review">
-			<div class="container review__container">
-				<h1 class="reviewtitle">Оставить отзыв</h1>
-				<form id="review-form" class="review-form">
-					<!-- Скрытое поле, чтобы задать source = 1 (для стиральных машин) -->
-					<input type="hidden" id="source" name="source" value="1" />
+		<div class="container review-container">
+			<form id="review-form" class="review-form">
+				<!-- Скрытое поле, чтобы задать source = 1 (для стиральных машин) -->
+				<input type="hidden" id="source" name="source" value="1" />
 
-					<div class="review-form__row review-form__row--name">
-						<label for="name" class="review-form__label"
-							>Ваше имя</label
-						>
-						<input
-							type="text"
-							id="name"
-							name="name"
-							class="review-form__input"
-							required
-						/>
+				<div class="review-form__row review-form__row--name">
+					<label for="name" class="review-form__label"
+						>Ваше имя</label
+					>
+					<input
+						type="text"
+						id="name"
+						name="name"
+						class="review-form__input"
+						required
+					/>
+				</div>
+
+				<div class="review-form__row review-form__row--repair-date">
+					<label for="repair-date" class="review-form__label"
+						>Дата ремонта</label
+					>
+					<input
+						type="date"
+						id="repair-date"
+						name="repair_date"
+						class="review-form__input"
+					/>
+				</div>
+
+				<div class="review-form__row review-form__row--malfunction">
+					<label for="malfunction-type" class="review-form__label"
+						>Тип неисправности</label
+					>
+					<input
+						type="text"
+						id="malfunction-type"
+						name="malfunction_type"
+						class="review-form__input"
+					/>
+				</div>
+
+				<div class="review-form__row review-form__row--master">
+					<label for="master" class="review-form__label"
+						>Фамилия мастера</label
+					>
+					<input
+						type="text"
+						id="master"
+						name="master"
+						class="review-form__input"
+					/>
+				</div>
+
+				<div class="review-form__row review-form__row--review">
+					<label for="review" class="review-form__label"
+						>Текст отзыва</label
+					>
+					<textarea
+						id="review"
+						name="review"
+						class="review-form__textarea"
+						required
+						rows="5"
+					></textarea>
+				</div>
+
+				<div class="review-form__row review-form__row--rating">
+					<span class="review-form__label">Ваша оценка</span>
+					<div class="review-form__rating">
+						<label class="review-form__radio-label"
+							>1
+							<input
+								class="review-form__radio-input"
+								type="radio"
+								name="rate"
+								value="1"
+								required
+							/>
+						</label>
+						<label class="review-form__radio-label"
+							>2
+							<input
+								class="review-form__radio-input"
+								type="radio"
+								name="rate"
+								value="2"
+								required
+							/>
+						</label>
+						<label class="review-form__radio-label"
+							>3
+							<input
+								class="review-form__radio-input"
+								type="radio"
+								name="rate"
+								value="3"
+								required
+							/>
+						</label>
+						<label class="review-form__radio-label"
+							>4
+							<input
+								class="review-form__radio-input"
+								type="radio"
+								name="rate"
+								value="4"
+								required
+							/>
+						</label>
+						<label class="review-form__radio-label"
+							>5
+							<input
+								class="review-form__radio-input"
+								type="radio"
+								name="rate"
+								value="5"
+								required
+							/>
+						</label>
 					</div>
+				</div>
 
-					<div class="review-form__row review-form__row--repair-date">
-						<label for="repair-date" class="review-form__label"
-							>Дата ремонта</label
-						>
-						<input
-							type="date"
-							id="repair-date"
-							name="repair_date"
-							class="review-form__input"
-						/>
+				<div class="review-form__row review-form__row--submit">
+					<button type="submit" class="review-form__button">
+						Отправить
+					</button>
+				</div>
+			</form>
+
+			<section id="review-stats" class="review-stats">
+				<h2 class="review-stats__title">Статистика оценок</h2>
+
+				<div class="review-stats__summary">
+					<div class="review-stats__average">
+						<span id="stats-average"></span> из 5
+						<div
+							id="average-stars"
+							class="review-stats__stars"
+						></div>
 					</div>
+					<p class="review-stats__total">
+						на основании <span id="stats-count"></span> о ремонте
+						стиральных машин
+					</p>
+				</div>
 
-					<div class="review-form__row review-form__row--malfunction">
-						<label for="malfunction-type" class="review-form__label"
-							>Тип неисправности</label
-						>
-						<input
-							type="text"
-							id="malfunction-type"
-							name="malfunction_type"
-							class="review-form__input"
-						/>
-					</div>
-
-					<div class="review-form__row review-form__row--master">
-						<label for="master" class="review-form__label"
-							>Фамилия мастера</label
-						>
-						<input
-							type="text"
-							id="master"
-							name="master"
-							class="review-form__input"
-						/>
-					</div>
-
-					<div class="review-form__row review-form__row--review">
-						<label for="review" class="review-form__label"
-							>Текст отзыва</label
-						>
-						<textarea
-							id="review"
-							name="review"
-							class="review-form__textarea"
-							required
-							rows="5"
-						></textarea>
-					</div>
-
-					<div class="review-form__row review-form__row--rating">
-						<span class="review-form__label">Ваша оценка</span>
-						<div class="review-form__rating">
-							<label class="review-form__radio-label"
-								>1
-								<input
-									class="review-form__radio-input"
-									type="radio"
-									name="rate"
-									value="1"
-									required
-								/>
-							</label>
-							<label class="review-form__radio-label"
-								>2
-								<input
-									class="review-form__radio-input"
-									type="radio"
-									name="rate"
-									value="2"
-									required
-								/>
-							</label>
-							<label class="review-form__radio-label"
-								>3
-								<input
-									class="review-form__radio-input"
-									type="radio"
-									name="rate"
-									value="3"
-									required
-								/>
-							</label>
-							<label class="review-form__radio-label"
-								>4
-								<input
-									class="review-form__radio-input"
-									type="radio"
-									name="rate"
-									value="4"
-									required
-								/>
-							</label>
-							<label class="review-form__radio-label"
-								>5
-								<input
-									class="review-form__radio-input"
-									type="radio"
-									name="rate"
-									value="5"
-									required
-								/>
-							</label>
+				<ul class="review-stats__list">
+					<li class="review-stats__item" data-rate="5">
+						<div class="review-stats__stars">
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
 						</div>
-					</div>
+						<div class="review-stats__progressbar">
+							<span class="review-stats__progress"></span>
+						</div>
+						<span class="review-stats__count">0</span>
+					</li>
 
-					<div class="review-form__row review-form__row--submit">
-						<button type="submit" class="review-form__button">
-							Отправить
-						</button>
-					</div>
-				</form>
-			</div>
-		</section>
+					<li class="review-stats__item" data-rate="4">
+						<div class="review-stats__stars">
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--empty"
+							></span>
+						</div>
+						<div class="review-stats__progressbar">
+							<span class="review-stats__progress"></span>
+						</div>
+						<span class="review-stats__count">0</span>
+					</li>
 
-		<!-- БЛОК СТАТИСТИКИ -->
-		<section class="stats">
-			<div class="container stats__container">
-				<div id="stats-block"></div>
-			</div>
-		</section>
+					<li class="review-stats__item" data-rate="3">
+						<div class="review-stats__stars">
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--empty"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--empty"
+							></span>
+						</div>
+						<div class="review-stats__progressbar">
+							<span class="review-stats__progress"></span>
+						</div>
+						<span class="review-stats__count">0</span>
+					</li>
 
-		<!-- СПИСОК ОТЗЫВОВ -->
-		<section class="reviews-list">
-			<div class="container reviews__container">
-				<div id="reviews-container"></div>
+					<li class="review-stats__item" data-rate="2">
+						<div class="review-stats__stars">
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--empty"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--empty"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--empty"
+							></span>
+						</div>
+						<div class="review-stats__progressbar">
+							<span class="review-stats__progress"></span>
+						</div>
+						<span class="review-stats__count">0</span>
+					</li>
 
-				<!-- Блок пагинации -->
-				<div id="pagination" class="moderation__pagination">
+					<li class="review-stats__item" data-rate="1">
+						<div class="review-stats__stars">
+							<span
+								class="review-stats__star review-stats__star--filled"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--empty"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--empty"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--empty"
+							></span>
+							<span
+								class="review-stats__star review-stats__star--empty"
+							></span>
+						</div>
+						<div class="review-stats__progressbar">
+							<span class="review-stats__progress"></span>
+						</div>
+						<span class="review-stats__count">0</span>
+					</li>
+				</ul>
+			</section>
+
+			<div class="reviews-list">
+				<div id="reviews" class="reviews"></div>
+
+				<div id="pagination" class="pagination">
 					<button id="prev-page" class="pagination__button">
 						Назад
 					</button>
@@ -193,9 +318,63 @@
 					</button>
 				</div>
 			</div>
-		</section>
+		</div>
 
-		<!-- Скрипт со всей логикой формы и вывода отзывов -->
-		<script src="./js/review.js"></script>
+		<script type="module" src="./js/reviewMain.js"></script>
 	</body>
 </html>
+
+<!-- <article
+	class="review-card"
+	itemprop="review"
+	itemscope=""
+	itemtype="https://schema.org/Review"
+>
+	<header class="review-card__header">
+		<span
+			class="review-card__author"
+			itemprop="author"
+			itemscope=""
+			itemtype="https://schema.org/Person"
+		>
+			<span itemprop="name">Даниил</span>
+		</span>
+		/
+		<time
+			class="review-card__date"
+			itemprop="datePublished"
+			datetime="2025-02-22"
+		>
+			2025-02-22
+		</time>
+	</header>
+
+	<div class="review-card__body" itemprop="reviewBody">123</div>
+
+	<div class="review-card__meta">
+		<div class="review-card__master">Мастер: <span>—</span></div>
+		<div class="review-card__malfunction">
+			Неисправность: <span>—</span>
+		</div>
+	</div>
+
+	<div
+		class="review-card__rate"
+		itemprop="reviewRating"
+		itemscope=""
+		itemtype="https://schema.org/Rating"
+	>
+		<meta itemprop="worstRating" content="1" />
+		<meta itemprop="bestRating" content="5" />
+		<strong>Оценка:</strong>
+		<span itemprop="ratingValue">5</span> из 5
+
+		<div class="review-card__stars">
+			<span class="review-stats__star review-stats__star--filled"></span
+			><span class="review-stats__star review-stats__star--filled"></span
+			><span class="review-stats__star review-stats__star--filled"></span
+			><span class="review-stats__star review-stats__star--filled"></span
+			><span class="review-stats__star review-stats__star--filled"></span>
+		</div>
+	</div>
+</article> -->
