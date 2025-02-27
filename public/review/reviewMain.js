@@ -1,12 +1,22 @@
-// reviewMain.js
-
-import { submitReview, getPublicReviews, getReviewsConfig } from './api.js';
-import { renderReviewCard, formatDateForInput } from './reviewUi.js';
+import {
+	submitReview,
+	getPublicReviews,
+	getReviewsConfig,
+} from '../common/js/api.js';
+import { renderReviewCard, renderStars } from './reviewUi.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+	let currentPage = 1;
+	let limit = 50; // Значение по умолчанию, заменяется из конфигурации
+	const configRes = await getReviewsConfig();
+	if (configRes.success) {
+		limit = configRes.limit;
+	}
+
 	const reviewForm = document.getElementById('review-form');
 	const reviewsContainer = document.getElementById('reviews');
 	const statsAverageEl = document.getElementById('stats-average');
+	const statsAverageStars = document.getElementById('average-stars');
 	const statsCountEl = document.getElementById('stats-count');
 	const statsItems = document.querySelectorAll('.review-stats__item');
 	const currentPageSpan = document.getElementById('current-page');
@@ -14,16 +24,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const nextPageButton = document.getElementById('next-page');
 	const sourceInput = document.getElementById('source');
 
-	let currentPage = 1;
-	let limit = 50; // Значение по умолчанию
-
-	// Загружаем конфигурацию (например, лимит для пагинации)
-	const configRes = await getReviewsConfig();
-	if (configRes.success) {
-		limit = configRes.limit;
-	}
-
-	// Обработчик отправки формы
 	reviewForm.addEventListener('submit', async (e) => {
 		e.preventDefault();
 		const formData = new FormData(reviewForm);
@@ -58,20 +58,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 	async function loadAndRenderReviews(page) {
 		const source = sourceInput.value;
 		const data = await getPublicReviews(source, page);
-		if (!data.success) {
-			console.error('Ошибка при загрузке отзывов');
-			return;
-		}
-		// Обновляем блок статистики
-		updateStatsBlock(data);
-		// Отрисовываем отзывы
 		reviewsContainer.innerHTML = '';
+
+		updateStatsBlock(data);
 		data.reviews.forEach((review) => {
 			const card = renderReviewCard(review);
 			reviewsContainer.appendChild(card);
 		});
+
 		currentPage = page;
 		currentPageSpan.textContent = page;
+
 		nextPageButton.disabled = data.total <= page * limit;
 		prevPageButton.disabled = page <= 1;
 	}
@@ -80,13 +77,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 		const average = data.avgRating ? data.avgRating.toFixed(1) : '0';
 		const total = data.totalReviews || 0;
 		statsAverageEl.textContent = average;
+		statsAverageStars.innerHTML = renderStars(Math.round(average));
 		statsCountEl.textContent = `${total} ${getDeclension(total, [
-			'отзыв',
 			'отзыва',
+			'отзывов',
 			'отзывов',
 		])}`;
 
-		// Обновляем каждый элемент списка статистики
 		statsItems.forEach((item) => {
 			const rate = parseInt(item.getAttribute('data-rate'), 10);
 			const count = data.ratingDistribution[rate] || 0;
@@ -108,6 +105,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 		];
 	}
 
-	// Загружаем первую страницу отзывов
 	loadAndRenderReviews(currentPage);
 });

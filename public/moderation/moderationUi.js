@@ -1,10 +1,3 @@
-// moderationUi.js
-
-/**
- * Форматирует дату из строки (из БД) в формат "YYYY-MM-DD"
- * Если требуется работать с датами в UTC, можно упростить:
- *    return dateString ? dateString.slice(0,10) : '';
- */
 export function formatDateForInput(dateString) {
     if (!dateString) return '';
 	const date = new Date(dateString);
@@ -21,14 +14,6 @@ export function getLocalDate() {
 	return `${year}-${month}-${day}`;
 }
 
-
-/**
- * Создаёт DOM-элемент для одного отзыва в окне модерации.
- * @param {Object} review объект отзыва из БД.
- * @param {Object} options - справочные данные и обработчики:
- *   { sourcesList, typesList, marksList, malfunctionsList, onUpdate, onDelete }
- * @returns {HTMLElement} контейнер с отрисованным отзывом.
- */
 export function createReviewItem(review, options) {
 	const {
 		sourcesList,
@@ -85,7 +70,7 @@ export function createReviewItem(review, options) {
     </div>
     <div class="review-item__row">
       <label for="${prefix}-name" class="review-item__label">Имя автора:</label>
-      <input id="${prefix}-name" class="review-item__input" type="text" name="name" value="${
+      <input id="${prefix}-name" class="review-item__input" type="text" name="name" placeholder="Иван Иванов" value="${
 		review.Name
 	}" required />
     </div>
@@ -97,13 +82,13 @@ export function createReviewItem(review, options) {
     </div>
     <div class="review-item__row">
       <label for="${prefix}-malfunction-type" class="review-item__label">Тип неисправности:</label>
-      <input id="${prefix}-malfunction-type" class="review-item__input" type="text" name="malfunction_type" value="${
+      <input id="${prefix}-malfunction-type" class="review-item__input" type="text" name="malfunction_type" placeholder="Сломался холодильник" value="${
 		review.Malfunction_type || ''
 	}" />
     </div>
     <div class="review-item__row">
       <label for="${prefix}-master" class="review-item__label">Мастер:</label>
-      <input id="${prefix}-master" class="review-item__input" type="text" name="master" value="${
+      <input id="${prefix}-master" class="review-item__input" type="text" name="master" placeholder="Иван Иванов" value="${
 		review.Master || ''
 	}" />
     </div>
@@ -142,13 +127,13 @@ export function createReviewItem(review, options) {
     </div>
     <div class="review-item__row">
       <label for="${prefix}-review" class="review-item__label">Текст отзыва:</label>
-      <textarea id="${prefix}-review" class="review-item__textarea" name="review" required>${
+      <textarea id="${prefix}-review" class="review-item__textarea" name="review" placeholder="Быстро и качественно" required>${
 		review.Review
 	}</textarea>
     </div>
     <div class="review-item__row">
       <label for="${prefix}-comment" class="review-item__label">Комментарий компании:</label>
-      <textarea id="${prefix}-comment" class="review-item__textarea" name="comment">${
+      <textarea id="${prefix}-comment" class="review-item__textarea" name="comment" placeholder="Спасибо за отзыв!">${
 		review.Comment || ''
 	}</textarea>
     </div>
@@ -175,7 +160,15 @@ export function createReviewItem(review, options) {
 			options: sourcesList,
 			maxItems: 1,
 			create: false,
-			placeholder: 'Начните вводить источник...',
+			placeholder: 'Посудомоечные машины',
+			render: {
+				no_results: function (data, escape) {
+					return `<div class="no-results">Ничего не найдено</div>`;
+				},
+			},
+			onChange: function (value) {
+				this.input.value = value;
+			},
 		}
 	);
 	if (review.Source) {
@@ -189,10 +182,16 @@ export function createReviewItem(review, options) {
 		options: typesList,
 		maxItems: 1,
 		create: false,
-		placeholder: 'Начните вводить тип техники...',
+		placeholder: 'Телевизор',
+		render: {
+			no_results: function (data, escape) {
+				return `<div class="no-results">Ничего не найдено</div>`;
+			},
+		},
 	});
 	if (review.Type) {
 		typeSelect.setValue(review.Type, true);
+
 	}
 
 	const markSelect = new TomSelect(details.querySelector(`#${prefix}-mark`), {
@@ -202,7 +201,12 @@ export function createReviewItem(review, options) {
 		options: marksList,
 		maxItems: 1,
 		create: false,
-		placeholder: 'Начните вводить марку...',
+		placeholder: 'LG',
+		render: {
+			no_results: function (data, escape) {
+				return `<div class="no-results">Ничего не найдено</div>`;
+			},
+		},
 	});
 	if (review.Mark) {
 		markSelect.setValue(review.Mark, true);
@@ -217,7 +221,12 @@ export function createReviewItem(review, options) {
 			options: malfunctionsList,
 			maxItems: null,
 			create: false,
-			placeholder: 'Начните вводить неисправность...',
+			placeholder: 'Подключение стиральной машины',
+			render: {
+				no_results: function (data, escape) {
+					return `<div class="no-results">Ничего не найдено</div>`;
+				},
+			},
 		}
 	);
 	if (review.Malfunctions) {
@@ -237,7 +246,6 @@ export function createReviewItem(review, options) {
 			);
 			if (!commentDateInput.value) {
                 commentDateInput.value = getLocalDate();
-                console.log(commentDateInput.value);
 			}
 		} else {
 			details.classList.remove('review-item__details--open');
@@ -261,12 +269,11 @@ export function createReviewItem(review, options) {
 			review: formData.get('review'),
 			comment: formData.get('comment'),
 			comment_date: formData.get('comment_date'),
-			source: formData.get('source'),
-			type: formData.get('type'),
-			mark: formData.get('mark'),
-			malfunctions: formData.getAll('malfunctions').join(','),
-        };
-        console.log(dataToSend);
+			source: sourceSelect.getValue(),
+			type: typeSelect.getValue(),
+			mark: markSelect.getValue(),
+			malfunctions: malfunctionsSelect.getValue().join(','),
+		};
 		if (typeof onUpdate === 'function') {
 			onUpdate(dataToSend, container);
 		}
@@ -286,11 +293,6 @@ export function createReviewItem(review, options) {
 	return container;
 }
 
-/**
- * Обновляет DOM-элемент отзыва (например, после успешного обновления)
- * @param {HTMLElement} container — контейнер отзыва.
- * @param {Object} review — обновлённый объект отзыва.
- */
 export function updateReviewItemUI(container, review) {
     const header = container.querySelector('.review-item__header');
     header.querySelector('.review-item__id').textContent = review.id;

@@ -1,12 +1,3 @@
-// reviewUi.js
-
-/**
- * Форматирует дату из строки (из БД) в формат "YYYY-MM-DD".
- * Почему нельзя просто использовать slice(0,10)?
- * Если взять просто dateString.slice(0,10), браузер интерпретирует дату как UTC,
- * что при часовом поясе (например, UTC+3) может давать предыдущую дату.
- * Поэтому мы компенсируем смещение, чтобы отображалась локальная дата.
- */
 export function formatDateForInput(dateString) {
 	if (!dateString) return '';
 	const date = new Date(dateString);
@@ -15,9 +6,6 @@ export function formatDateForInput(dateString) {
 	return localDate.toISOString().split('T')[0];
 }
 
-/**
- * Возвращает строку локальной даты "YYYY-MM-DD" по текущему времени.
- */
 export function getLocalDate() {
 	const now = new Date();
 	const year = now.getFullYear();
@@ -26,11 +14,6 @@ export function getLocalDate() {
 	return `${year}-${month}-${day}`;
 }
 
-/**
- * Рендерит HTML для звезд рейтинга.
- * @param {number} rate – оценка от 1 до 5.
- * @returns {string} – HTML с пятью <span> для звезд.
- */
 export function renderStars(rate) {
 	let html = '';
 	for (let i = 1; i <= 5; i++) {
@@ -42,12 +25,6 @@ export function renderStars(rate) {
 	return html;
 }
 
-/**
- * Создаёт DOM-элемент карточки отзыва для публичного раздела.
- * Используется разметка schema.org и БЭМ-классы.
- * @param {Object} review — объект отзыва из БД.
- * @returns {HTMLElement} — готовая карточка отзыва.
- */
 export function renderReviewCard(review) {
 	const article = document.createElement('article');
 	article.className = 'review-card';
@@ -55,7 +32,6 @@ export function renderReviewCard(review) {
 	article.setAttribute('itemscope', '');
 	article.setAttribute('itemtype', 'https://schema.org/Review');
 
-	// Заголовок: автор и дата
 	const header = document.createElement('header');
 	header.className = 'review-card__header';
 	header.innerHTML = `
@@ -71,27 +47,33 @@ export function renderReviewCard(review) {
   `;
 	article.appendChild(header);
 
-	// Тело отзыва
 	const body = document.createElement('div');
 	body.className = 'review-card__body';
 	body.setAttribute('itemprop', 'reviewBody');
 	body.innerHTML = review.Review || '';
 	article.appendChild(body);
 
-	// Блок метаинформации: мастер и неисправность
 	const meta = document.createElement('div');
 	meta.className = 'review-card__meta';
-	meta.innerHTML = `
-    <div class="review-card__master">Мастер: <span>${
-		review.Master || '—'
-	}</span></div>
-    <div class="review-card__malfunction">Неисправность: <span>${
-		review.Malfunction_type || '—'
-	}</span></div>
-  `;
-	article.appendChild(meta);
 
-	// Блок оценки и звезд
+	if (review.Master) {
+		const masterDiv = document.createElement('div');
+		masterDiv.className = 'review-card__master';
+		masterDiv.innerHTML = `Мастер: <span>${review.Master}</span>`;
+		meta.appendChild(masterDiv);
+	}
+
+	if (review.Malfunction_type) {
+		const malfunctionDiv = document.createElement('div');
+		malfunctionDiv.className = 'review-card__malfunction';
+		malfunctionDiv.innerHTML = `Неисправность: <span>${review.Malfunction_type}</span>`;
+		meta.appendChild(malfunctionDiv);
+	}
+
+	if (meta.childElementCount > 0) {
+		article.appendChild(meta);
+	}
+
 	const rateDiv = document.createElement('div');
 	rateDiv.className = 'review-card__rate';
 	rateDiv.setAttribute('itemprop', 'reviewRating');
@@ -109,7 +91,6 @@ export function renderReviewCard(review) {
   `;
 	article.appendChild(rateDiv);
 
-	// Если есть ответ компании, отрисовываем его
 	if (review.Comment) {
 		const answer = document.createElement('div');
 		answer.className = 'review-card__answer';

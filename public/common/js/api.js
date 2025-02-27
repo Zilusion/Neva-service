@@ -1,56 +1,38 @@
-// api.js
-
-/**
- * Получить настройки модерации (в т.ч. лимит)
- */
+// moderation
 export async function getModerationConfig() {
 	const res = await fetch('/getModerationConfig');
-	return await res.json(); // {success:true, limit:5}
+	return await res.json();
 }
 
-/**
- * Загрузить список отзывов (пагинация)
- */
 export async function getReviews(page) {
 	const res = await fetch(`/getReviews?page=${page}`);
-	return await res.json(); // {reviews, total}
+	return await res.json();
 }
 
-/**
- * Получить один отзыв по id
- */
 export async function getReviewById(id) {
 	const res = await fetch(`/getReviewById?id=${id}`);
-	return await res.json(); // {success, review}
+	return await res.json();
 }
 
-/**
- * Обновить отзыв (PUT или POST)
- */
+
 export async function updateReview(data) {
 	const res = await fetch('/updateReview', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(data),
 	});
-	return await res.json(); // {success, updatedReview}
+	return await res.json();
 }
 
-/**
- * Удалить отзыв
- */
 export async function deleteReview(id) {
 	const res = await fetch('/deleteReview', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ id }),
 	});
-	return await res.json(); // {success:true/false}
+	return await res.json();
 }
 
-/**
- * Загрузить справочные данные (sources, types, marks, malfunctions)
- */
 export async function getSources() {
 	const res = await fetch('/getSources');
 	return await res.json();
@@ -72,7 +54,7 @@ export async function getMalfunctions() {
 }
 
 
-
+// review
 export async function getReviewsConfig() {
 	const res = await fetch('/getReviewsConfig');
 	return await res.json();

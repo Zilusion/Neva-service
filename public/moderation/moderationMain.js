@@ -1,5 +1,3 @@
-// moderationMain.js
-
 import {
 	getModerationConfig,
 	getReviews,
@@ -7,12 +5,17 @@ import {
 	getTypes,
 	getMarks,
 	getMalfunctions,
-} from './api.js';
+} from './../common/js/api.js';
 import { createReviewItem, updateReviewItemUI } from './moderationUi.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 	let currentPage = 1;
-	let limit = 5; // Значение по умолчанию; затем заменим из конфигурации
+	let limit = 20; // Значение по умолчанию, заменяется из конфигурации
+	const configRes = await getModerationConfig();
+	if (configRes.success) {
+		limit = configRes.limit;
+	}
+
 	const reviewsContainer = document.getElementById('reviews');
 	const currentPageSpan = document.getElementById('current-page');
 	const prevPageButton = document.getElementById('prev-page');
@@ -22,11 +25,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 	let typesList = [];
 	let marksList = [];
 	let malfunctionsList = [];
-
-	const configRes = await getModerationConfig();
-	if (configRes.success) {
-		limit = configRes.limit;
-	}
 
 	async function loadSuggestions() {
 		let data;
@@ -112,5 +110,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 		}
 	}
 
-	loadAndRenderReviews(1);
+	loadAndRenderReviews(currentPage);
 });

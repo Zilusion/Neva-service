@@ -90,11 +90,11 @@
 .review-item__toggle-icon {
 	width: 20px;
 	height: 20px;
-	background: url('./../images/icon-closed.svg');
+	background: url('./../assets/icons/icon-closed.svg');
 }
 
 .review-item__toggle-button--open .review-item__toggle-icon {
-	background: url('./../images/icon-opened.svg');
+	background: url('./../assets/icons/icon-opened.svg');
 }
 
 .review-item__text {

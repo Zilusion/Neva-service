@@ -7,8 +7,8 @@ const app = express();
 const db = mysql.createConnection({
 	host: 'localhost',
 	user: 'root',
-	password: '123456789',
-	database: 'neva_service_new',
+	password: '',
+	database: 'neva-service',
 });
 
 db.connect((err) => {
@@ -24,8 +24,8 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-const MODERATION_LIMIT = 10;
-const PUBLIC_LIMIT = 2;
+const MODERATION_LIMIT = 20;
+const PUBLIC_LIMIT = 50;
 
 app.post('/submitReview', (req, res) => {
 	let { name, repair_date, malfunction_type, master, review, rate, source } =
@@ -56,12 +56,11 @@ app.post('/submitReview', (req, res) => {
 });
 
 app.get('/getPublicReviews', (req, res) => {
-	const source = parseInt(req.query.source) || 0; // 1,2,3
+	const source = parseInt(req.query.source) || 0;
 	const page = parseInt(req.query.page) || 1;
 	const limit = PUBLIC_LIMIT;
 	const offset = (page - 1) * limit;
 
-	// Основной запрос отзывов
 	const query = `
       SELECT SQL_CALC_FOUND_ROWS *
       FROM Reviews
@@ -74,7 +73,7 @@ app.get('/getPublicReviews', (req, res) => {
 			console.error(err);
 			return res.status(500).json({ success: false });
 		}
-		// Всего записей
+		
 		db.query('SELECT FOUND_ROWS() as total', (err2, results) => {
 			if (err2) {
 				console.error(err2);
@@ -82,7 +81,6 @@ app.get('/getPublicReviews', (req, res) => {
 			}
 			const total = results[0].total;
 
-			// Запрос для распределения оценок (1..5)
 			const ratingDistQuery = `
               SELECT Rate, COUNT(*) as count
               FROM Reviews
@@ -95,7 +93,6 @@ app.get('/getPublicReviews', (req, res) => {
 					return res.status(500).json({ success: false });
 				}
 
-				// Запрос для среднего рейтинга и общего числа
 				const avgQuery = `
                   SELECT AVG(Rate) as avgRating, COUNT(*) as totalReviews
                   FROM Reviews
@@ -110,12 +107,9 @@ app.get('/getPublicReviews', (req, res) => {
 					const avgRating = avgRows[0].avgRating || 0;
 					const totalReviews = avgRows[0].totalReviews || 0;
 
-					// Преобразуем распределение в удобный формат (Rate -> count)
-					// Пример: [{Rate:5, count:10}, {Rate:4, count:3}, ...]
-					// Вы можете вернуть как есть
 					const ratingDistribution = {};
 					for (let i = 1; i <= 5; i++) {
-						ratingDistribution[i] = 0; // по умолчанию 0
+						ratingDistribution[i] = 0;
 					}
 					ratingDistRows.forEach((row) => {
 						ratingDistribution[row.Rate] = row.count;
@@ -124,10 +118,10 @@ app.get('/getPublicReviews', (req, res) => {
 					res.json({
 						success: true,
 						reviews,
-						total, // количество отзывов на текущем срезе
-						avgRating, // средняя оценка
-						totalReviews, // общее число опубликованных отзывов
-						ratingDistribution, // {1: X, 2: Y, ... 5: Z}
+						total,
+						avgRating,
+						totalReviews,
+						ratingDistribution,
 					});
 				});
 			});
